@@ -3,9 +3,9 @@ import sqlite3
 import numpy as np
 
 # importar dados coletores
-# importante, a primeira linha do txt tem que conter "Codigo;Coletor1" "Codigo;Coletor2" // criar scrip pra eliminar isso
-coletor1 = pd.read_csv('coletor1.txt', sep=';')
-coletor2 = pd.read_csv('coletor2.txt', sep=';')
+# importante, a primeira linha do txt tem que conter "Codigo;Coletor1" "Codigo;Coletor2"
+coletor1 = pd.read_csv('coletor1.txt', sep=';', names=['Codigo', 'Coletor1'])
+coletor2 = pd.read_csv('coletor2.txt', sep=';', names=['Codigo', 'Coletor2'])
 
 coletor1.set_index('Codigo', inplace=True)
 coletor2.set_index('Codigo', inplace=True)
@@ -17,7 +17,7 @@ coletor2agrupado = coletor2.groupby('Codigo').sum()
 planilha = coletor1agrupado.join(coletor2agrupado, how="outer")
 planilha.fillna(0, inplace=True)
 planilha['Diferença'] = planilha['Coletor1'] - planilha['Coletor2']
-planilha['Diferença %'] = (planilha['Diferença'] / ((planilha['Coletor1'] + planilha['Coletor2'] / 2))) * 100
+planilha['Diferença %'] = (planilha['Diferença'] / (planilha['Coletor1'] + planilha['Coletor2'] / 2)) * 100
 planilha.sort_index(inplace=True)
 
 # relatórios de diferenças
